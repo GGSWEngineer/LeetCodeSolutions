@@ -1,0 +1,109 @@
+383. Ransom Note
+Easy
+
+Given two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.
+
+Each letter in magazine can only be used once in ransomNote.
+
+
+
+Example 1:
+
+Input: ransomNote = "a", magazine = "b"
+Output: false
+Example 2:
+
+Input: ransomNote = "aa", magazine = "ab"
+Output: false
+Example 3:
+
+Input: ransomNote = "aa", magazine = "aab"
+Output: true
+
+
+Constraints:
+
+1 <= ransomNote.length, magazine.length <= 105
+ransomNote and magazine consist of lowercase English letters.
+Accepted
+802.6K
+Submissions
+1.4M
+Acceptance Rate
+58.6%
+
+
+************
+EXPLANATION
+************
+We need to check to see if the letters from magazine can make up the letters in ransomNote. The key note here is that we can use the letters from magazine ONCE.
+First, if the ransomNote length is greater than the magazine lenght, we should return false because magazine doesn't have enough letters to fill up the ransomNote.
+Second, we need to get the count of each of the letters. I like to use an array to keep track of the counts and the method of, if its ransomNote increment by 1 and if its in magazine decrement by 1. This method is useful
+because it crossed out the characters that magazine is able to fullfill. Once we complete the array, we simply check if the value is greater than 1 at any point because if it is, it means that magazine
+unable to fill in that character in the ransomNote.
+
+Initially solved with a hashmap, but opted for an array because looking up elements and changing their values is more efficient than using a map with a hash table and other data structures to find and change value.
+Even though O(2n) is the time complexity of the solution with hashmap, because our input is smaller in this case, using the array is more efficient. With larger values, the map would be a little bit better.
+
+Time Complexity O(n + m + o) -> O(n) 93%
+- use of 3 for loops that itirate through ransomNote.length, magazine.length, and arr.length which simplifies to O(n) 
+Space Complexity O(1) -> O(1) 98%
+- the array is 26 elements long, not growing or shrinking in size relative to the input, so it is O(1) space complexity. 
+
+*********
+SOLUTION
+*********
+
+var canConstruct = function(ransomNote, magazine) {
+
+    if(ransomNote.length > magazine.length) return false
+
+    let arr = new Array(26).fill(0)
+    let noteChar;
+    let magazineChar;
+
+    for(let i = 0; i < ransomNote.length; i++) {
+        noteChar = ransomNote[i].charCodeAt() - 97;
+        arr[noteChar]++
+
+    }
+
+    for(let i = 0; i < magazine.length; i++) {
+        magazineChar = magazine[i].charCodeAt() - 97;
+        arr[magazineChar]--
+    }
+
+    for(let value of arr) {
+        if(value >= 1) {
+            return false
+        }
+    }
+
+    return true
+ };
+
+
+*******************
+ALTERNATIVE SOLUTION
+*******************
+
+
+var canConstruct = function(ransomNote, magazine) {
+
+    if(ransomNote.length > magazine.length) return false
+
+    let map = new Map();
+    for(let i = 0; i < magazine.length; i++) {
+        map.set(ransomNote[i], (map.get(ransomNote[i]) || 0) + 1);
+        map.set(magazine[i], (map.get(magazine[i]) || 0) - 1)
+    }
+
+    for(let [key, value] of map) {
+        if(value >= 1 && key !== undefined) {
+            return false
+        }
+    }
+
+
+    return true
+ };
